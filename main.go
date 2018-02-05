@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
+	"os"
 	//	"fmt"
 	"io/ioutil"
 	"log"
@@ -89,6 +91,7 @@ func main() {
 	PostIt(jsonData)
 }
 
+//PostIt : PostIt is a function that accepts a JSON string and passes it as an arguement to SQL Sever import procedure.
 func PostIt(jx []byte) {
 
 	//fmt.Println(string(jx))
@@ -104,8 +107,15 @@ func PostIt(jx []byte) {
 	}
 }
 
+//DB : DB is a function that connects to SQL server.
 func DB() *sqlx.DB {
-	db, err := sqlx.Connect("mssql", "server=192.168.1.34;user id=sa;password=123;database=quikserve;log64;encrypt=disable")
+	serv := os.Getenv("DB_SERVER")
+	user := os.Getenv("DB_USER")
+	pass := os.Getenv("DB_PASS")
+	database := os.Getenv("DB_DATABASE")
+
+	db, err := sqlx.Connect("mssql", fmt.Sprintf(`server=%s;user id=%s;password=%s;database=%s;log64;encrypt=disable`, serv, user, pass, database))
+
 	if err != nil {
 		log.Println(err)
 	}
